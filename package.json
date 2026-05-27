@@ -8,6 +8,7 @@
     "dev": "electron .",
     "cli": "python -m payload_revealer",
     "test": "python -m pytest tests/ -v",
+    "test:e2e": "node tests/e2e/electron.spec.js",
     "build:py": "pip install -e .",
     "build:electron": "electron-builder",
     "dist": "electron-builder --win --linux --mac"
@@ -50,7 +51,8 @@
   },
   "devDependencies": {
     "electron": "^42.3.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "playwright": "^1.60.0"
   },
   "author": "Payload Revealer Project",
   "license": "MIT"

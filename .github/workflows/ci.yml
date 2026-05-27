@@ -1,0 +1,30 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '26' }
+      - run: pip install -e .
+      - run: pytest
+      - run: pip install pyinstaller
+      - run: pyinstaller payload_revealer_engine.spec
+      - uses: actions/upload-artifact@v4
+        with: { name: payload_revealer_engine, path: dist/payload_revealer_engine.exe }
+
+  e2e:
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '26' }
+      - run: pip install -e .
+      - run: npm install
+      - run: npm run test:e2e
