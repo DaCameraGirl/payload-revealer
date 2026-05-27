@@ -29,21 +29,27 @@
       }
     ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "electron/assets/icon.png"
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "icon": "electron/assets/icon.png"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "icon": "electron/assets/icon.png"
     }
   },
-  "dependencies": {},
   "devDependencies": {
-    "electron": "^28.0.0",
+    "electron": "^42.3.0",
     "electron-builder": "^24.9.1"
   },
   "author": "Payload Revealer Project",

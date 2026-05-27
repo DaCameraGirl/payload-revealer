@@ -38,6 +38,7 @@ function startPythonBridge() {
   pythonProcess = spawn(pythonCmd, ["-m", "payload_revealer.engine.ipc_bridge"], {
     cwd: moduleDir,
     stdio: ["pipe", "pipe", "pipe"],
+    env: { ...process.env, PYTHONUNBUFFERED: "1" },
   });
 
   let buffer = "";
