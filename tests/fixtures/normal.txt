@@ -1,0 +1,2 @@
+Hello World
+This is normal text with basic ASCII.
