@@ -4,7 +4,8 @@
 [![Release](https://img.shields.io/github/v/release/DaCameraGirl/payload-revealer?style=flat&color=blue)](https://github.com/DaCameraGirl/payload-revealer/releases/tag/v1.0.0)
 [![Download](https://img.shields.io/badge/download-7.2MB%20.exe-brightgreen)](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)
 
-**Hidden Unicode payload scanner & steganography detector.**
+**Hidden Unicode payload scanner & steganography detector.**  
+Built for DFIR analysts, developers, and AI output auditing.
 
 Scans any text file for invisible characters, Unicode control codes, zero-width steganography, Bidi override attacks, and hidden metadata — then extracts decoded payloads into a readable forensic report.
 
@@ -12,18 +13,16 @@ Scans any text file for invisible characters, Unicode control codes, zero-width 
 
 ## Quick Download
 
-**[Download payload_revealer_engine-v1.0.0-win64.exe](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)** — 7.2MB standalone, no Python required. Pipe a JSON-RPC request to scan files.
+**[Download payload_revealer_engine-v1.0.0-win64.exe](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)** — 7.2MB standalone Windows executable, no Python required. Drag a file onto the drop zone or click Open File.
 
 Or use the CLI with Python:
 
 ```bash
-git clone https://github.com/DaCameraGirl/payload-revealer.git
-cd payload-revealer
 pip install -e .
 python -m payload_revealer tests/fixtures/forensic_report.txt
 ```
 
-The fixture contains 312 zero-width characters encoding a hidden beacon URL. The scanner extracts:
+The fixture contains 312 zero-width characters encoding a hidden beacon URL:
 
 ```
 beacon://c2-exfil.lan/reg?agent=demo-01
@@ -32,10 +31,10 @@ beacon://c2-exfil.lan/reg?agent=demo-01
 ## Features
 
 - **Character Count Scanner** — Total character count even if content is invisible
-- **Invisible Payload Detector** — Flags zero-width spaces, Unicode control chars, white-on-white text, embedded metadata
+- **Invisible Payload Detector** — Flags zero-width spaces, Unicode control characters, bidirectional overrides, invisible whitespace, Unicode tags, and other hidden text artifacts
 - **Visualizer Panel** — Shows hidden content in decoded, readable format
 - **Word Count Tracker** — Actual word count vs. visible word count
-- **Export Option** — Save decoded payload as `.txt` or `.json` artifact
+- **Export Option** — Save decoded payload as `.txt` or `.json` forensic artifact
 
 ## Installation
 
@@ -94,7 +93,7 @@ python -m payload_revealer ./suspicious_docs/ --recursive
 | Invisible whitespace | NBSP, en-space, ideographic space | Low |
 | Noncharacters | `U+FFFE`, `U+FFFF`, etc. | High |
 
-## Build Standalone Exe
+## Build from Source
 
 Bundle the Python engine into a single `.exe` (no Python installation required):
 
