@@ -4,6 +4,22 @@
 
 Scans any text file for invisible characters, Unicode control codes, zero-width steganography, Bidi override attacks, and hidden metadata — then extracts decoded payloads into a readable forensic report.
 
+![screenshot](docs/screenshot.png)
+
+## Quick Demo
+
+```bash
+git clone https://github.com/DaCameraGirl/payload-revealer.git
+cd payload-revealer
+pip install -e .
+python -m payload_revealer tests/fixtures/forensic_report.txt
+```
+
+The forensic report fixture contains 312 zero-width characters encoding a hidden beacon URL. The scanner will extract:
+```
+beacon://c2-exfil.lan/reg?agent=demo-01
+```
+
 ## Features
 
 - **Character Count Scanner** — Total character count even if content is invisible
@@ -15,7 +31,7 @@ Scans any text file for invisible characters, Unicode control codes, zero-width 
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/payload-revealer.git
+git clone https://github.com/DaCameraGirl/payload-revealer.git
 cd payload-revealer
 npm install
 pip install -e .
@@ -68,6 +84,17 @@ python -m payload_revealer ./suspicious_docs/ --recursive
 | Private Use Areas | `U+E000`–`U+F8FF`, `U+F0000`–`U+10FFFF` | Medium |
 | Invisible whitespace | NBSP, en-space, ideographic space | Low |
 | Noncharacters | `U+FFFE`, `U+FFFF`, etc. | High |
+
+## Build Standalone Exe
+
+Bundle the Python engine into a single `.exe` (no Python installation required):
+
+```bash
+pip install pyinstaller
+pyinstaller payload_revealer_engine.spec
+```
+
+The output goes to `dist/payload_revealer_engine.exe`. Electron auto-detects it and uses it instead of `python -m`.
 
 ## Architecture
 

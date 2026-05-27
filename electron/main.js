@@ -7,36 +7,32 @@ let pythonProcess = null;
 let pendingRequests = new Map();
 let requestId = 0;
 
-function getPythonCommand() {
-  // Try to find Python - check common locations
+function getBridgeCommand() {
+  const bundledExe = path.join(__dirname, "..", "dist", "payload_revealer_engine.exe");
+  const fs = require("fs");
+  if (fs.existsSync(bundledExe)) {
+    return { cmd: bundledExe, args: [], cwd: null };
+  }
+  // Fall back to python -m
   const candidates = [
-    "python",
-    "python3",
-    "py",
-    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python311", "python.exe"),
-    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python312", "python.exe"),
+    "python", "python3", "py",
     path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python313", "python.exe"),
+    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python312", "python.exe"),
+    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python311", "python.exe"),
   ];
-
   for (const cmd of candidates) {
     try {
-      const result = require("child_process").spawnSync(cmd, ["--version"], { timeout: 3000 });
-      if (result.status === 0) return cmd;
-    } catch (_) {
-      continue;
-    }
+      const r = require("child_process").spawnSync(cmd, ["--version"], { timeout: 3000 });
+      if (r.status === 0) return { cmd, args: ["-m", "payload_revealer.engine.ipc_bridge"], cwd: path.join(__dirname, "..") };
+    } catch (_) {}
   }
-  return "python";
+  return { cmd: "python", args: ["-m", "payload_revealer.engine.ipc_bridge"], cwd: path.join(__dirname, "..") };
 }
 
 function startPythonBridge() {
-  const pythonCmd = getPythonCommand();
-  const bridgePath = path.join(__dirname, "..", "payload_revealer", "engine", "ipc_bridge.py");
-
-  // Run as module
-  const moduleDir = path.join(__dirname, "..");
-  pythonProcess = spawn(pythonCmd, ["-m", "payload_revealer.engine.ipc_bridge"], {
-    cwd: moduleDir,
+  const bridge = getBridgeCommand();
+  pythonProcess = spawn(bridge.cmd, bridge.args, {
+    cwd: bridge.cwd || path.dirname(bridge.cmd),
     stdio: ["pipe", "pipe", "pipe"],
     env: { ...process.env, PYTHONUNBUFFERED: "1" },
   });
