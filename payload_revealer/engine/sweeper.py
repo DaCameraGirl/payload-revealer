@@ -1,7 +1,6 @@
 """Core character scanner - enumerates every character and classifies it."""
 
-import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from collections import Counter
 import unicodedata
 

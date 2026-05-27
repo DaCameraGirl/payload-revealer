@@ -3,7 +3,6 @@
 import argparse
 import sys
 import os
-import json
 import unicodedata
 
 from ..engine.sweeper import scan_file
@@ -23,10 +22,7 @@ def _safe_output(text: str) -> str:
                 ch.encode(sys.stdout.encoding or "utf-8", errors="strict")
                 result.append(ch)
             except UnicodeEncodeError:
-                if unicodedata.category(ch) in ("Cc", "Cf", "Co", "Cs"):
-                    result.append(f"<U+{ord(ch):04X}>")
-                else:
-                    result.append(ch)
+                result.append(f"<U+{ord(ch):04X}>")
         return "".join(result)
 
 

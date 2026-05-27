@@ -2,6 +2,7 @@
 
 import json
 import hashlib
+from pathlib import Path
 from datetime import datetime, timezone
 
 from .sweeper import PayloadReport
@@ -132,6 +133,3 @@ def save_report(report: PayloadReport, output_path: str, fmt: str = "json") -> s
     content = export_json(report) if fmt == "json" else export_txt(report)
     Path(output_path).write_text(content, encoding="utf-8")
     return output_path
-
-
-from pathlib import Path

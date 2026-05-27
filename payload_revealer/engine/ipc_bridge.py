@@ -4,10 +4,10 @@ import sys
 import json
 import traceback
 
-from .engine.sweeper import scan_file
-from .engine.classifier import filter_findings
-from .engine.payload_extractor import extract_all
-from .engine.export_engine import export_json, export_txt
+from .sweeper import scan_file
+from .classifier import filter_findings
+from .payload_extractor import extract_all
+from .export_engine import export_json, export_txt
 
 
 def handle_request(req: dict) -> dict:

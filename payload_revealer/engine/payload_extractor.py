@@ -1,6 +1,6 @@
 """Payload extractor - reconstructs hidden messages from classified characters."""
 
-from .sweeper import PayloadReport, CharFinding
+from .sweeper import CharFinding, PayloadReport
 
 
 def extract_all(report: PayloadReport) -> list[dict]:
