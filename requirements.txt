@@ -1,0 +1,7 @@
+# Payload Revealer has zero external Python dependencies.
+# The engine uses only Python standard library modules:
+#   unicodedata, json, hashlib, argparse, os, sys, pathlib, dataclasses, collections
+#
+# If you want enhanced detection capabilities, optionally install:
+# chardet>=5.2.0
+# regex>=2024.0.0

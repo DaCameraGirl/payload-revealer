@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'">
+  <title>Payload Revealer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header id="header">
+      <div class="logo">
+        <span class="logo-icon">&#9901;</span>
+        <h1>Payload Revealer</h1>
+        <span class="version">v1.0.0</span>
+      </div>
+      <div class="header-actions">
+        <button id="btnSelectFile" class="btn btn-primary">&#128193; Open File</button>
+      </div>
+    </header>
+
+    <!-- Drop Zone -->
+    <div id="dropZone" class="drop-zone">
+      <div class="drop-zone-content">
+        <span class="drop-icon">&#128196;</span>
+        <p>Drop a file here to scan for hidden payloads</p>
+        <p class="drop-hint">or click <strong>Open File</strong> to browse</p>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div id="statusBar" class="status-bar hidden">
+      <div class="status-file"></div>
+      <div class="status-badges">
+        <span id="badgeTotal" class="badge"></span>
+        <span id="badgeHidden" class="badge badge-danger hidden"></span>
+        <span id="badgeCritical" class="badge badge-critical hidden"></span>
+      </div>
+      <div class="status-spinner hidden">
+        <span class="spinner"></span> Scanning...
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div id="statsGrid" class="stats-grid hidden">
+      <div class="stat-card">
+        <div class="stat-label">Total Characters</div>
+        <div class="stat-value" id="statTotalChars">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visible Chars</div>
+        <div class="stat-value" id="statVisibleChars">-</div>
+      </div>
+      <div class="stat-card stat-card-warn">
+        <div class="stat-label">Hidden Chars</div>
+        <div class="stat-value" id="statHiddenChars">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visible Words</div>
+        <div class="stat-value" id="statVisibleWords">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Actual Words</div>
+        <div class="stat-value" id="statActualWords">-</div>
+      </div>
+      <div class="stat-card stat-card-warn">
+        <div class="stat-label">Word Count Delta</div>
+        <div class="stat-value" id="statWordDelta">-</div>
+      </div>
+    </div>
+
+    <!-- Risk Summary -->
+    <div id="riskSummary" class="risk-summary hidden">
+      <span class="risk-chip critical">
+        <span class="chip-dot"></span> Critical: <strong id="riskCritical">0</strong>
+      </span>
+      <span class="risk-chip high">
+        <span class="chip-dot"></span> High: <strong id="riskHigh">0</strong>
+      </span>
+      <span class="risk-chip medium">
+        <span class="chip-dot"></span> Medium: <strong id="riskMedium">0</strong>
+      </span>
+      <span class="risk-chip low">
+        <span class="chip-dot"></span> Low: <strong id="riskLow">0</strong>
+      </span>
+    </div>
+
+    <!-- Results Panel -->
+    <div id="resultsPanel" class="results-panel hidden">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="findings">&#9888; Findings</button>
+        <button class="tab" data-tab="payloads">&#128273; Decoded Payloads</button>
+        <button class="tab" data-tab="raw">&#128221; Raw Report</button>
+      </div>
+
+      <!-- Findings Tab -->
+      <div id="tabFindings" class="tab-content">
+        <div class="table-scroll">
+          <table id="findingsTable">
+            <thead>
+              <tr>
+                <th>Index</th>
+                <th>Codepoint</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Block</th>
+                <th>Risk</th>
+                <th>Tags</th>
+              </tr>
+            </thead>
+            <tbody id="findingsBody"></tbody>
+          </table>
+        </div>
+        <div id="noFindings" class="empty-state hidden">
+          <span class="empty-icon">&#9989;</span>
+          <p>No hidden characters or suspicious payloads detected</p>
+        </div>
+      </div>
+
+      <!-- Payloads Tab -->
+      <div id="tabPayloads" class="tab-content hidden">
+        <div id="payloadContainer"></div>
+        <div id="noPayloads" class="empty-state hidden">
+          <span class="empty-icon">&#128270;</span>
+          <p>No extractable payloads found</p>
+        </div>
+      </div>
+
+      <!-- Raw Tab -->
+      <div id="tabRaw" class="tab-content hidden">
+        <pre id="rawOutput" class="raw-output"></pre>
+      </div>
+    </div>
+
+    <!-- Export Bar -->
+    <div id="exportBar" class="export-bar hidden">
+      <button id="btnExportJson" class="btn btn-outline">&#128190; Export JSON</button>
+      <button id="btnExportTxt" class="btn btn-outline">&#128196; Export TXT</button>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="errorToast" class="toast toast-error hidden"></div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

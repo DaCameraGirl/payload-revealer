@@ -1,0 +1,51 @@
+{
+  "name": "payload-revealer",
+  "version": "1.0.0",
+  "description": "Hidden Unicode payload scanner & steganography detector",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "cli": "python -m payload_revealer",
+    "test": "python -m pytest tests/ -v",
+    "build:py": "pip install -e .",
+    "build:electron": "electron-builder",
+    "dist": "electron-builder --win --linux --mac"
+  },
+  "build": {
+    "appId": "com.payloadrevealer.app",
+    "productName": "Payload Revealer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "payload_revealer/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "payload_revealer",
+        "to": "payload_revealer"
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "electron/assets/icon.png"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "electron/assets/icon.png"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "electron/assets/icon.png"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "author": "Payload Revealer Project",
+  "license": "MIT"
+}
