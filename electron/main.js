@@ -125,6 +125,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     title: "Payload Revealer",
+    icon: path.join(__dirname, "assets", "icon.svg"),
     backgroundColor: "#0d1117",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
