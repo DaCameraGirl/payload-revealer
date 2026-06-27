@@ -48,7 +48,7 @@ Scans any text file for invisible characters, Unicode control codes, zero-width 
 ![demo](docs/demo.gif)
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=Quick%20Download&fontSize=22&fontColor=e6edf3" width="720" alt="Quick Download" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Quick%20Download&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Quick Download" /></p>
 
 
 **[Download payload_revealer_engine-v1.0.0-win64.exe](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)** — 7.2MB standalone Windows executable, no Python required. Drag a file onto the drop zone or click Open File.
@@ -67,7 +67,7 @@ beacon://c2-exfil.lan/reg?agent=demo-01
 ```
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=Features&fontSize=22&fontColor=e6edf3" width="720" alt="Features" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Features&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Features" /></p>
 
 
 - **Character Count Scanner** — Total character count even if content is invisible
@@ -77,7 +77,7 @@ beacon://c2-exfil.lan/reg?agent=demo-01
 - **Export Option** — Save decoded payload as `.txt` or `.json` forensic artifact
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=Installation&fontSize=22&fontColor=e6edf3" width="720" alt="Installation" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Installation&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Installation" /></p>
 
 
 ```bash
@@ -88,7 +88,7 @@ pip install -e .
 ```
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=Usage&fontSize=22&fontColor=e6edf3" width="720" alt="Usage" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Usage&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Usage" /></p>
 
 
 ### Desktop App (Electron)
@@ -125,7 +125,7 @@ python -m payload_revealer ./suspicious_docs/ --recursive
 | `--version` | Show version |
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=What%20It%20Detects&fontSize=22&fontColor=e6edf3" width="720" alt="What It Detects" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=What%20It%20Detects&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="What It Detects" /></p>
 
 
 | Category | Examples | Risk |
@@ -140,7 +140,7 @@ python -m payload_revealer ./suspicious_docs/ --recursive
 | Noncharacters | `U+FFFE`, `U+FFFF`, etc. | High |
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=Build%20from%20Source&fontSize=22&fontColor=e6edf3" width="720" alt="Build from Source" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Build%20from%20Source&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Build from Source" /></p>
 
 
 Bundle the Python engine into a single `.exe` (no Python installation required):
@@ -153,7 +153,7 @@ pyinstaller payload_revealer_engine.spec
 The output goes to `dist/payload_revealer_engine.exe`. Electron auto-detects it and uses it instead of `python -m`.
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=Architecture&fontSize=22&fontColor=e6edf3" width="720" alt="Architecture" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Architecture&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Architecture" /></p>
 
 
 ```
@@ -179,7 +179,7 @@ payload_revealer/
 ```
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
-<p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color=070b14&height=50&section=header&text=License&fontSize=22&fontColor=e6edf3" width="720" alt="License" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=License&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="License" /></p>
 
 
 MIT
