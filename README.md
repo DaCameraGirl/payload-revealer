@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/readme-banner.svg" alt="Payload Revealer — Inspect and reveal hidden payloads in media and documents — forensic QA for training pipelines." width="720" />
+  <img src="docs/readme-banner.svg" alt="Payload Revealer — Detect invisible Unicode payloads, zero-width text, bidi attacks, and clipboard hidden-text artifacts in text files." width="720" />
 </p>
 
 <p align="center">
-  <strong>Inspect and reveal hidden payloads in media and documents — forensic QA for training pipelines.</strong>
+  <strong>Detect invisible Unicode payloads, zero-width text, bidi attacks, and clipboard hidden-text artifacts in text files.</strong>
 </p>
 
 <p align="center">
@@ -40,10 +40,10 @@
 [![Release](https://img.shields.io/github/v/release/DaCameraGirl/payload-revealer?style=flat&color=blue)](https://github.com/DaCameraGirl/payload-revealer/releases/tag/v1.0.0)
 [![Download](https://img.shields.io/badge/download-7.2MB%20.exe-brightgreen)](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)
 
-**Hidden Unicode payload scanner & steganography detector.**  
+**Invisible Unicode payload scanner for text files.**  
 Built for DFIR analysts, developers, and AI output auditing.
 
-Scans any text file for invisible characters, Unicode control codes, zero-width steganography, Bidi override attacks, and hidden metadata — then extracts decoded payloads into a readable forensic report.
+Payload Revealer detects invisible Unicode payloads, zero-width text, bidi attacks, control characters, and copy/paste hidden-text artifacts in text files — then extracts decoded payloads into a readable report when the hidden data uses supported encodings (zero-width binary streams, bidi reversals, Unicode tag blocks, null-byte chunks, and control sequences).
 
 ![demo](docs/demo.gif)
 
@@ -138,6 +138,17 @@ python -m payload_revealer ./suspicious_docs/ --recursive
 | Private Use Areas | `U+E000`–`U+F8FF`, `U+F0000`–`U+10FFFF` | Medium |
 | Invisible whitespace | NBSP, en-space, ideographic space | Low |
 | Noncharacters | `U+FFFE`, `U+FFFF`, etc. | High |
+
+<p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=What%20It%20Does%20Not%20Detect&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="What It Does Not Detect" /></p>
+
+
+This tool is scoped to **text and Unicode forensics**. It is not a universal steganography detector.
+
+| Scenario | Why it is out of scope |
+|----------|------------------------|
+| **CSS-transparent text** | Letters hidden with `color: transparent` or similar styling are normal Unicode when pasted into a plain text file. Payload Revealer does not parse HTML or CSS. |
+| **Image, PDF, or media steganography** | No parsers for LSB image stego, PDF object tricks, audio watermarks, or other binary media payloads. |
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
 <p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Build%20from%20Source&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Build from Source" /></p>

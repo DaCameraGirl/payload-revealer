@@ -10,6 +10,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '26' }
       - run: pip install -e .
+      - run: pip install pytest
       - run: pytest
       - run: pip install pyinstaller
       - run: pyinstaller payload_revealer_engine.spec
@@ -26,5 +27,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '26' }
       - run: pip install -e .
+      - run: pip install pytest
       - run: npm install
+      - run: npx electron --version
       - run: npm run test:e2e
+        env:
+          ELECTRON_DISABLE_SANDBOX: "1"

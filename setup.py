@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="payload-revealer",
     version="1.0.0",
-    description="Hidden Unicode payload scanner & steganography detector",
+    description="Invisible Unicode payload scanner for text files — zero-width, bidi, and clipboard artifacts",
     author="Payload Revealer Project",
     license="MIT",
     packages=find_packages(),

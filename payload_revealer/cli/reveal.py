@@ -35,7 +35,7 @@ def main():
 
     parser = argparse.ArgumentParser(
         prog="payload-revealer",
-        description="Scan files for hidden Unicode payloads and steganography.",
+        description="Scan text files for invisible Unicode payloads and hidden-character artifacts.",
     )
     parser.add_argument("target", help="File or directory to scan")
     parser.add_argument("--recursive", "-r", action="store_true", help="Recurse into directories")
