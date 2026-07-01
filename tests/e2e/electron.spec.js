@@ -5,12 +5,22 @@ const assert = require("assert");
 const ROOT = path.resolve(__dirname, "..", "..");
 const FIXTURE = path.join(ROOT, "tests", "fixtures", "forensic_report.txt");
 
+function resolveElectronPath() {
+  const fs = require("fs");
+  const distDir = path.join(ROOT, "node_modules", "electron", "dist");
+  const candidates = [
+    path.join(distDir, "electron.exe"),
+    path.join(distDir, "electron"),
+    path.join(distDir, "Electron.app", "Contents", "MacOS", "Electron"),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  throw new Error(`Electron binary not found under ${distDir}`);
+}
+
 async function run() {
-  // Locate electron binary
-  const electronBin = path.join(ROOT, "node_modules", ".bin", "electron");
-  const electronPath = require("fs").existsSync(electronBin)
-    ? electronBin
-    : path.join(ROOT, "node_modules", "electron", "dist", "electron.exe");
+  const electronPath = resolveElectronPath();
 
   // Launch Electron app
   const app = await electron.launch({

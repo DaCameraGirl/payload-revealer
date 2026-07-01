@@ -29,4 +29,7 @@ jobs:
       - run: pip install -e .
       - run: pip install pytest
       - run: npm install
+      - run: npx electron --version
       - run: npm run test:e2e
+        env:
+          ELECTRON_DISABLE_SANDBOX: "1"
