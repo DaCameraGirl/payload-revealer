@@ -1,7 +1,7 @@
 {
   "name": "payload-revealer",
   "version": "1.0.0",
-  "description": "Invisible Unicode payload scanner for text files — zero-width, bidi, and clipboard artifacts",
+  "description": "Catches invisible Unicode instructions hidden in copied Slack, chat, and doc text",
   "main": "electron/main.js",
   "scripts": {
     "start": "electron .",

@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="docs/readme-banner.svg" alt="Payload Revealer — Detect invisible Unicode payloads, zero-width text, bidi attacks, and clipboard hidden-text artifacts in text files." width="720" />
+  <img src="docs/readme-banner.svg" alt="Payload Revealer — Catches invisible Unicode instructions hidden inside copied Slack, chat, and doc text." width="720" />
 </p>
 
 <p align="center">
-  <strong>Detect invisible Unicode payloads, zero-width text, bidi attacks, and clipboard hidden-text artifacts in text files.</strong>
+  <strong>Catches invisible Unicode instructions hidden inside copied text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts that can smuggle answers or prompt instructions into Slack, docs, chats, or evaluation tasks.</strong>
 </p>
 
 <p align="center">
-  <a href="https://dacameragirl.github.io/payload-revealer/"><img src="https://img.shields.io/badge/Live-GitHub%20Pages-33d69f?style=for-the-badge&logo=github&logoColor=white" alt="Live demo" /></a>
+  <a href="https://dacameragirl.github.io/payload-revealer/"><img src="https://img.shields.io/badge/Project%20page-GitHub%20Pages-33d69f?style=for-the-badge&logo=github&logoColor=white" alt="Project page" /></a>
   <a href="https://github.com/DaCameraGirl/payload-revealer"><img src="https://img.shields.io/badge/Code-GitHub-58a6ff?style=for-the-badge&logo=github&logoColor=white" alt="Source code" /></a>
 </p>
 
@@ -40,10 +40,32 @@
 [![Release](https://img.shields.io/github/v/release/DaCameraGirl/payload-revealer?style=flat&color=blue)](https://github.com/DaCameraGirl/payload-revealer/releases/tag/v1.0.0)
 [![Download](https://img.shields.io/badge/download-7.2MB%20.exe-brightgreen)](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)
 
-**Invisible Unicode payload scanner for text files.**  
-Built for DFIR analysts, developers, and AI output auditing.
+**Anti-hidden-answer scanner for copied text.**  
+Built for DFIR analysts, developers, AI output auditing, and anyone vetting pasted Slack/chat/doc content.
 
-Payload Revealer detects invisible Unicode payloads, zero-width text, bidi attacks, control characters, and copy/paste hidden-text artifacts in text files — then extracts decoded payloads into a readable report when the hidden data uses supported encodings (zero-width binary streams, bidi reversals, Unicode tag blocks, null-byte chunks, and control sequences).
+Payload Revealer catches invisible Unicode instructions hidden inside copied text, including zero-width characters, bidi overrides, Unicode tags, and other hidden copy/paste artifacts that can smuggle answers or prompt instructions into Slack, docs, chats, or evaluation tasks. It scans text files character-by-character, flags invisible codepoints with risk tags (`zero-width`, `bidi-override`, `unicode-tag`, `c0-control`, `null-byte`, and more), and extracts decoded payloads when the hidden data uses supported encodings (zero-width binary streams, bidi reversals, Unicode tag blocks, null-byte chunks, and control sequences).
+
+<p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=The%20Slack%20Scenario&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="The Slack Scenario" /></p>
+
+A copied answer can look normal in Slack while carrying invisible Unicode underneath — hidden instructions like “pick option 3” or “tell them X said Y.” PowerShell and some editors may expose weird characters; Payload Revealer does the systematic version: enumerate every codepoint, report suspicious invisible characters, and decode embedded payloads when possible.
+
+**If something pasted suspicious:**
+
+1. Save the pasted text to a plain `.txt` file (not rich text).
+2. Scan it:
+
+```bash
+python -m payload_revealer .\suspicious.txt
+```
+
+3. For a shareable audit trail:
+
+```bash
+python -m payload_revealer .\suspicious.txt --format json --output report.json
+```
+
+If the hidden instruction used zero-width Unicode, bidi tricks, Unicode tags, or control characters — and those codepoints survived the paste — this tool is built to catch it.
 
 ![demo](docs/demo.gif)
 
