@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
 
-project_root = Path(SPECPATH).parent
+project_root = Path(SPECPATH)
 
 a = Analysis(
     [str(project_root / "engine_runner.py")],
