@@ -1,7 +1,7 @@
 {
   "name": "payload-revealer",
   "version": "1.0.0",
-  "description": "Hidden Unicode payload scanner & steganography detector",
+  "description": "Invisible Unicode payload scanner for text files — zero-width, bidi, and clipboard artifacts",
   "main": "electron/main.js",
   "scripts": {
     "start": "electron .",
