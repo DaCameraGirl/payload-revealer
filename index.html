@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payload Revealer — Catch invisible Unicode instructions hidden in copied text</title>
+<meta name="description" content="Catches invisible Unicode instructions hidden inside copied Slack, chat, and doc text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts.">
+<link rel="icon" href="electron/assets/icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #070b14;
+    --bg-alt: #0d1424;
+    --panel: #0f1626;
+    --border: #1c2740;
+    --text: #e6edf3;
+    --muted: #8b98ac;
+    --green: #33d69f;
+    --blue: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, #070b14 0%, #0a0f1c 100%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+  .hero { text-align: center; padding: 56px 24px 24px; }
+  .hero img.banner { width: 100%; max-width: 720px; height: auto; }
+  .tagline {
+    max-width: 680px;
+    margin: 24px auto 28px;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+  .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 8px; }
+  .badges img { height: 32px; }
+  .badges.small img { height: 20px; }
+  .built-by { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 24px 0 8px; }
+  .built-by a { color: var(--blue); text-decoration: none; }
+  .divider { width: 100%; max-width: 720px; display: block; margin: 40px auto 0; }
+  .section-banner { width: 100%; max-width: 720px; display: block; margin: 0 auto 20px; }
+  section { margin-top: 8px; }
+  .lede { color: var(--muted); }
+  .download-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    margin: 20px 0 28px;
+  }
+  .download-btn {
+    display: inline-block;
+    background: var(--green);
+    color: #04140e;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+  }
+  .download-btn:hover { filter: brightness(1.08); }
+  .download-meta { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
+  pre, code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  pre {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+  }
+  code { background: var(--panel); padding: 2px 6px; border-radius: 4px; font-size: 0.88rem; }
+  pre code { background: none; padding: 0; }
+  ul.features { list-style: none; padding: 0; margin: 0; }
+  ul.features li {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+  ul.features strong { color: var(--green); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--muted); font-weight: 600; }
+  .risk-critical { color: #ff6b6b; }
+  .risk-high { color: #ffa552; }
+  .risk-medium { color: #ffd166; }
+  .risk-low { color: var(--muted); }
+  .demo-gif {
+    width: 100%;
+    max-width: 720px;
+    display: block;
+    margin: 16px auto;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 60px;
+  }
+  footer a { color: var(--blue); text-decoration: none; }
+  a { color: var(--blue); }
+  h2 { font-size: 1.4rem; margin: 0 0 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <img class="banner" src="docs/readme-banner.svg" alt="Payload Revealer">
+    <p class="tagline">Catches invisible Unicode instructions hidden inside copied text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts that can smuggle answers or prompt instructions into Slack, docs, chats, or evaluation tasks.</p>
+    <div class="badges">
+      <a href="https://github.com/DaCameraGirl/payload-revealer"><img src="https://img.shields.io/badge/Code-GitHub-58a6ff?style=for-the-badge&logo=github&logoColor=white" alt="Source code"></a>
+      <a href="https://github.com/DaCameraGirl/payload-revealer/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/download-7.2MB%20.exe-33d69f?style=for-the-badge" alt="Download"></a>
+    </div>
+    <div class="badges small">
+      <a href="https://github.com/DaCameraGirl/payload-revealer/actions/workflows/ci.yml"><img src="https://github.com/DaCameraGirl/payload-revealer/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+      <img src="https://img.shields.io/badge/stack-Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="stack-Python">
+      <img src="https://img.shields.io/badge/license-MIT-informational?style=flat-square" alt="MIT license">
+    </div>
+    <p class="built-by">Built by <strong>Angela Hudson</strong> · <a href="https://github.com/DaCameraGirl">DaCameraGirl</a></p>
+  </div>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=The%20Slack%20Scenario&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="The Slack Scenario">
+  <section>
+    <p class="lede">A copied answer can look normal in Slack while carrying invisible Unicode underneath — hidden instructions like &ldquo;pick option 3&rdquo; or &ldquo;tell them X said Y.&rdquo; PowerShell and some editors may expose weird characters; Payload Revealer does the systematic version: enumerate every codepoint, report suspicious invisible characters, and decode embedded payloads when possible.</p>
+    <p><strong>If something pasted suspicious:</strong></p>
+    <pre><code>python -m payload_revealer .\suspicious.txt
+
+# For a shareable audit trail:
+python -m payload_revealer .\suspicious.txt --format json --output report.json</code></pre>
+    <img class="demo-gif" src="docs/demo.gif" alt="Payload Revealer demo">
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Quick%20Download&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Quick Download">
+  <section>
+    <div class="download-card">
+      <a class="download-btn" href="https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe">Download payload_revealer_engine-v1.0.0-win64.exe</a>
+      <p class="download-meta">7.2MB standalone Windows executable, no Python required. Drag a file onto the drop zone or click Open File.</p>
+    </div>
+    <p>Or use the CLI with Python:</p>
+    <pre><code>pip install -e .
+python -m payload_revealer tests/fixtures/forensic_report.txt</code></pre>
+    <p class="lede">The fixture contains 312 zero-width characters encoding a hidden beacon URL:</p>
+    <pre><code>beacon://c2-exfil.lan/reg?agent=demo-01</code></pre>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Features&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Features">
+  <section>
+    <ul class="features">
+      <li><strong>Character Count Scanner</strong> — Total character count even if content is invisible</li>
+      <li><strong>Invisible Payload Detector</strong> — Flags zero-width spaces, Unicode control characters, bidirectional overrides, invisible whitespace, Unicode tags, and other hidden text artifacts</li>
+      <li><strong>Visualizer Panel</strong> — Shows hidden content in decoded, readable format</li>
+      <li><strong>Word Count Tracker</strong> — Actual word count vs. visible word count</li>
+      <li><strong>Export Option</strong> — Save decoded payload as <code>.txt</code> or <code>.json</code> forensic artifact</li>
+    </ul>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Installation&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Installation">
+  <section>
+    <pre><code>git clone https://github.com/DaCameraGirl/payload-revealer.git
+cd payload-revealer
+npm install
+pip install -e .</code></pre>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Usage&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Usage">
+  <section>
+    <h2>Desktop App (Electron)</h2>
+    <pre><code>npm start</code></pre>
+    <h2>CLI Headless Mode</h2>
+    <pre><code># Quick scan
+python -m payload_revealer ./suspicious.txt
+
+# JSON output
+python -m payload_revealer ./suspicious.txt --format json
+
+# Save report
+python -m payload_revealer ./suspicious.txt --output report.json
+
+# Batch scan a directory
+python -m payload_revealer ./suspicious_docs/ --recursive</code></pre>
+    <h2>CLI Options</h2>
+    <table>
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td><code>--format, -f</code></td><td><code>text</code>, <code>json</code>, or <code>txt</code> (default: text)</td></tr>
+      <tr><td><code>--output, -o</code></td><td>Save report to file</td></tr>
+      <tr><td><code>--recursive, -r</code></td><td>Recurse into directories</td></tr>
+      <tr><td><code>--min-risk</code></td><td>Filter findings: <code>critical</code>, <code>high</code>, <code>medium</code>, <code>low</code>, <code>none</code></td></tr>
+      <tr><td><code>--quiet, -q</code></td><td>Suppress non-result output</td></tr>
+      <tr><td><code>--version</code></td><td>Show version</td></tr>
+    </table>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=What%20It%20Detects&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="What It Detects">
+  <section>
+    <table>
+      <tr><th>Category</th><th>Examples</th><th>Risk</th></tr>
+      <tr><td>Zero-width spaces</td><td><code>U+200B</code>, <code>U+200C</code>, <code>U+200D</code>, <code>U+FEFF</code></td><td class="risk-critical">Critical</td></tr>
+      <tr><td>Bidi overrides</td><td><code>U+202A</code>&ndash;<code>U+202E</code> (LRE, RLO, etc.)</td><td class="risk-critical">Critical</td></tr>
+      <tr><td>Unicode tags</td><td><code>U+E0001</code>&ndash;<code>U+E007F</code> (hidden metadata)</td><td class="risk-critical">Critical</td></tr>
+      <tr><td>C0/C1 controls</td><td><code>U+0000</code>&ndash;<code>U+001F</code>, <code>U+0080</code>&ndash;<code>U+009F</code></td><td class="risk-high">High</td></tr>
+      <tr><td>Variation selectors</td><td><code>U+FE00</code>&ndash;<code>U+FE0F</code>, <code>U+E0100</code>&ndash;<code>U+E01EF</code></td><td class="risk-medium">Medium</td></tr>
+      <tr><td>Private Use Areas</td><td><code>U+E000</code>&ndash;<code>U+F8FF</code>, <code>U+F0000</code>&ndash;<code>U+10FFFF</code></td><td class="risk-medium">Medium</td></tr>
+      <tr><td>Invisible whitespace</td><td>NBSP, en-space, ideographic space</td><td class="risk-low">Low</td></tr>
+      <tr><td>Noncharacters</td><td><code>U+FFFE</code>, <code>U+FFFF</code>, etc.</td><td class="risk-high">High</td></tr>
+    </table>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=What%20It%20Does%20Not%20Detect&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="What It Does Not Detect">
+  <section>
+    <p class="lede">This tool is scoped to <strong>text and Unicode forensics</strong>. It is not a universal steganography detector.</p>
+    <table>
+      <tr><th>Scenario</th><th>Why it is out of scope</th></tr>
+      <tr><td>CSS-transparent text</td><td>Letters hidden with <code>color: transparent</code> or similar styling are normal Unicode when pasted into a plain text file. Payload Revealer does not parse HTML or CSS.</td></tr>
+      <tr><td>Image, PDF, or media steganography</td><td>No parsers for LSB image stego, PDF object tricks, audio watermarks, or other binary media payloads.</td></tr>
+    </table>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Architecture&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Architecture">
+  <section>
+    <pre><code>payload_revealer/
+├── payload_revealer/       # Python engine
+│   ├── engine/
+│   │   ├── sweeper.py      # Core character scanner
+│   │   ├── classifier.py   # Unicode category tagging
+│   │   ├── payload_extractor.py  # Hidden message reconstruction
+│   │   ├── word_counter.py  # Visible vs actual word count
+│   │   ├── export_engine.py # JSON/TXT report export
+│   │   └── ipc_bridge.py   # JSON-RPC for Electron
+│   └── cli/
+│       └── reveal.py       # CLI headless mode
+├── electron/               # Desktop shell
+│   ├── main.js             # Electron main process
+│   ├── preload.js          # Secure IPC bridge
+│   └── renderer/           # UI
+│       ├── index.html
+│       ├── style.css
+│       └── renderer.js
+└── package.json</code></pre>
+  </section>
+
+  <footer>
+    MIT License · <a href="https://github.com/DaCameraGirl/payload-revealer">github.com/DaCameraGirl/payload-revealer</a>
+  </footer>
+
+</div>
+</body>
+</html>
