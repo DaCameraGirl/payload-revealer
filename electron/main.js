@@ -8,8 +8,10 @@ let pendingRequests = new Map();
 let requestId = 0;
 
 function getBridgeCommand() {
-  const bundledExe = path.join(__dirname, "..", "dist", "payload_revealer_engine.exe");
   const fs = require("fs");
+  const bundledExe = app.isPackaged
+    ? path.join(process.resourcesPath, "engine", "payload_revealer_engine.exe")
+    : path.join(__dirname, "..", "dist", "payload_revealer_engine.exe");
   if (fs.existsSync(bundledExe)) {
     return { cmd: bundledExe, args: [], cwd: null };
   }

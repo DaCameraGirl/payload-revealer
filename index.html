@@ -129,7 +129,7 @@
     <p class="tagline">Catches invisible Unicode instructions hidden inside copied text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts that can smuggle answers or prompt instructions into Slack, docs, chats, or evaluation tasks.</p>
     <div class="badges">
       <a href="https://github.com/DaCameraGirl/payload-revealer"><img src="https://img.shields.io/badge/Code-GitHub-58a6ff?style=for-the-badge&logo=github&logoColor=white" alt="Source code"></a>
-      <a href="https://github.com/DaCameraGirl/payload-revealer/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/download-7.2MB%20.exe-33d69f?style=for-the-badge" alt="Download"></a>
+      <a href="https://github.com/DaCameraGirl/payload-revealer/releases/latest"><img src="https://img.shields.io/badge/download-desktop%20app-33d69f?style=for-the-badge" alt="Download"></a>
     </div>
     <div class="badges small">
       <a href="https://github.com/DaCameraGirl/payload-revealer/actions/workflows/ci.yml"><img src="https://github.com/DaCameraGirl/payload-revealer/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -155,9 +155,10 @@ python -m payload_revealer .\suspicious.txt --format json --output report.json</
   <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Quick%20Download&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Quick Download">
   <section>
     <div class="download-card">
-      <a class="download-btn" href="https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe">Download payload_revealer_engine-v1.0.0-win64.exe</a>
-      <p class="download-meta">7.2MB standalone Windows executable, no Python required. Drag a file onto the drop zone or click Open File.</p>
+      <a class="download-btn" href="https://github.com/DaCameraGirl/payload-revealer/releases/latest">Download the Windows installer</a>
+      <p class="download-meta">Installs the Payload Revealer desktop app. No Python required. Drag a file onto the drop zone or click Open File.</p>
     </div>
+    <p class="lede">That release also ships <code>payload_revealer_engine-*-win64.exe</code> on its own — the headless scan engine the desktop app runs underneath. It's for scripting scans without the GUI; double-clicking it directly just opens an empty console, it isn't a standalone app.</p>
     <p>Or use the CLI with Python:</p>
     <pre><code>pip install -e .
 python -m payload_revealer tests/fixtures/forensic_report.txt</code></pre>

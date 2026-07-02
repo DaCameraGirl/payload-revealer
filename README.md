@@ -37,8 +37,8 @@
 # Payload Revealer
 
 [![CI](https://github.com/DaCameraGirl/payload-revealer/actions/workflows/ci.yml/badge.svg)](https://github.com/DaCameraGirl/payload-revealer/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/DaCameraGirl/payload-revealer?style=flat&color=blue)](https://github.com/DaCameraGirl/payload-revealer/releases/tag/v1.0.0)
-[![Download](https://img.shields.io/badge/download-7.2MB%20.exe-brightgreen)](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)
+[![Release](https://img.shields.io/github/v/release/DaCameraGirl/payload-revealer?style=flat&color=blue)](https://github.com/DaCameraGirl/payload-revealer/releases/latest)
+[![Download](https://img.shields.io/badge/download-desktop%20app-brightgreen)](https://github.com/DaCameraGirl/payload-revealer/releases/latest)
 
 **Anti-hidden-answer scanner for copied text.**  
 Built for DFIR analysts, developers, AI output auditing, and anyone vetting pasted Slack/chat/doc content.
@@ -73,7 +73,9 @@ If the hidden instruction used zero-width Unicode, bidi tricks, Unicode tags, or
 <p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Quick%20Download&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Quick Download" /></p>
 
 
-**[Download payload_revealer_engine-v1.0.0-win64.exe](https://github.com/DaCameraGirl/payload-revealer/releases/download/v1.0.0/payload_revealer_engine-v1.0.0-win64.exe)** — 7.2MB standalone Windows executable, no Python required. Drag a file onto the drop zone or click Open File.
+**[Download the Windows installer](https://github.com/DaCameraGirl/payload-revealer/releases/latest)** — installs the Payload Revealer desktop app (Electron GUI). No Python required. Drag a file onto the drop zone or click Open File.
+
+The release also includes `payload_revealer_engine-*-win64.exe` on its own — that's the headless scan engine the desktop app runs underneath. Only grab it separately if you're scripting scans without the GUI; double-clicking it directly just opens an empty console waiting for JSON-RPC input, it isn't a standalone app.
 
 Or use the CLI with Python:
 
