@@ -1,6 +1,6 @@
 {
   "name": "payload-revealer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Catches invisible Unicode instructions hidden in copied Slack, chat, and doc text",
   "main": "electron/main.js",
   "scripts": {
@@ -10,8 +10,9 @@
     "test": "python -m pytest tests/ -v",
     "test:e2e": "node tests/e2e/electron.spec.js",
     "build:py": "pip install -e .",
+    "build:engine": "pyinstaller payload_revealer_engine.spec",
     "build:electron": "electron-builder",
-    "dist": "electron-builder --win --linux --mac"
+    "dist": "npm run build:engine && electron-builder --win --linux --mac"
   },
   "build": {
     "appId": "com.payloadrevealer.app",
@@ -33,7 +34,14 @@
       "target": [
         "nsis"
       ],
-      "icon": "electron/assets/icon.png"
+      "icon": "electron/assets/icon-256.png",
+      "signExecutable": false,
+      "extraResources": [
+        {
+          "from": "dist/payload_revealer_engine.exe",
+          "to": "engine/payload_revealer_engine.exe"
+        }
+      ]
     },
     "mac": {
       "target": [
@@ -51,7 +59,7 @@
   },
   "devDependencies": {
     "electron": "^42.3.0",
-    "electron-builder": "^24.9.1",
+    "electron-builder": "^26.15.3",
     "playwright": "^1.60.0"
   },
   "author": "Payload Revealer Project",
