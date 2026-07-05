@@ -7,16 +7,21 @@
   "use strict";
 
   const Engine = window.PayloadRevealerEngine;
+  const HiddenFormatScanner = window.HiddenFormatScanner;
 
   const DOM = {
     pasteTab: document.getElementById("scPasteTab"),
     fileTab: document.getElementById("scFileTab"),
+    richTab: document.getElementById("scRichTab"),
     pastePanel: document.getElementById("scPastePanel"),
     filePanel: document.getElementById("scFilePanel"),
+    richPanel: document.getElementById("scRichPanel"),
     textarea: document.getElementById("scTextarea"),
     btnScanText: document.getElementById("scBtnScanText"),
     fileInput: document.getElementById("scFileInput"),
     dropZone: document.getElementById("dropZone"),
+    richInput: document.getElementById("scRichInput"),
+    btnClearRich: document.getElementById("scBtnClearRich"),
     statusBar: document.getElementById("statusBar"),
     statusFile: document.querySelector(".status-file"),
     statusSpinner: document.querySelector(".status-spinner"),
@@ -38,12 +43,16 @@
     resultsPanel: document.getElementById("resultsPanel"),
     tabFindings: document.getElementById("tabFindings"),
     tabPayloads: document.getElementById("tabPayloads"),
+    tabHiddenFormat: document.getElementById("tabHiddenFormat"),
+    tabHiddenFormatBtn: document.getElementById("tabHiddenFormatBtn"),
     tabRaw: document.getElementById("tabRaw"),
     findingsBody: document.getElementById("findingsBody"),
     findingsTable: document.getElementById("findingsTable"),
     noFindings: document.getElementById("noFindings"),
     payloadContainer: document.getElementById("payloadContainer"),
     noPayloads: document.getElementById("noPayloads"),
+    hiddenFormatContainer: document.getElementById("hiddenFormatContainer"),
+    noHiddenFormat: document.getElementById("noHiddenFormat"),
     rawOutput: document.getElementById("rawOutput"),
     exportBar: document.getElementById("exportBar"),
     errorToast: document.getElementById("errorToast"),
@@ -51,16 +60,50 @@
 
   let lastReport = null;
 
-  /* ===== Input mode tabs (paste vs. file) ===== */
+  /* ===== Input mode tabs (paste text vs. file vs. rich text) ===== */
   DOM.pasteTab.addEventListener("click", () => setInputMode("paste"));
   DOM.fileTab.addEventListener("click", () => setInputMode("file"));
+  DOM.richTab.addEventListener("click", () => setInputMode("rich"));
 
   function setInputMode(mode) {
     DOM.pasteTab.classList.toggle("active", mode === "paste");
     DOM.fileTab.classList.toggle("active", mode === "file");
+    DOM.richTab.classList.toggle("active", mode === "rich");
     DOM.pastePanel.classList.toggle("hidden", mode !== "paste");
     DOM.filePanel.classList.toggle("hidden", mode !== "file");
+    DOM.richPanel.classList.toggle("hidden", mode !== "rich");
   }
+
+  /* ===== Paste rich text (catches CSS-hidden formatting) ===== */
+  DOM.richInput.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const html = e.clipboardData.getData("text/html");
+    const plain = e.clipboardData.getData("text/plain");
+
+    if (html) {
+      DOM.richInput.innerHTML = html;
+    } else {
+      DOM.richInput.textContent = plain;
+    }
+
+    runScan(() => {
+      const hf = html
+        ? HiddenFormatScanner.scanHtml(html)
+        : { findings: [], visibleText: plain, hiddenText: "" };
+      const report = Engine.scanPastedText(hf.visibleText, "(pasted rich text)");
+      report.hidden_format_findings = hf.findings;
+      return report;
+    });
+  });
+
+  DOM.btnClearRich.addEventListener("click", () => {
+    DOM.richInput.innerHTML = "";
+    DOM.statusBar.classList.add("hidden");
+    DOM.statsGrid.classList.add("hidden");
+    DOM.riskSummary.classList.add("hidden");
+    DOM.resultsPanel.classList.add("hidden");
+    DOM.exportBar.classList.add("hidden");
+  });
 
   /* ===== Paste + Scan ===== */
   DOM.btnScanText.addEventListener("click", () => {
@@ -130,6 +173,7 @@
       const target = tab.dataset.tab;
       DOM.tabFindings.classList.toggle("hidden", target !== "findings");
       DOM.tabPayloads.classList.toggle("hidden", target !== "payloads");
+      DOM.tabHiddenFormat.classList.toggle("hidden", target !== "hiddenFormat");
       DOM.tabRaw.classList.toggle("hidden", target !== "raw");
     });
   });
@@ -189,21 +233,23 @@
     const file = data.file;
     const findings = data.findings || [];
     const payloads = data.extracted_payloads || [];
+    const hiddenFormatFindings = data.hidden_format_findings || [];
     const riskCounts = stats.risk_counts || {};
+    const totalCritical = (riskCounts.critical || 0) + hiddenFormatFindings.length;
 
     DOM.badgeTotal.textContent = stats.total_chars + " chars total";
     DOM.statusFile.textContent = file.path;
 
-    if (stats.hidden_chars > 0) {
+    if (stats.hidden_chars > 0 || hiddenFormatFindings.length > 0) {
       DOM.badgeHidden.classList.remove("hidden");
-      DOM.badgeHidden.textContent = stats.hidden_chars + " hidden";
+      DOM.badgeHidden.textContent = stats.hidden_chars + hiddenFormatFindings.length + " hidden";
     } else {
       DOM.badgeHidden.classList.add("hidden");
     }
 
-    if ((riskCounts.critical || 0) > 0) {
+    if (totalCritical > 0) {
       DOM.badgeCritical.classList.remove("hidden");
-      DOM.badgeCritical.textContent = riskCounts.critical + " critical";
+      DOM.badgeCritical.textContent = totalCritical + " critical";
     } else {
       DOM.badgeCritical.classList.add("hidden");
     }
@@ -221,7 +267,7 @@
     hiddenCard.classList.toggle("stat-card-warn", stats.hidden_chars > 0);
 
     DOM.riskSummary.classList.remove("hidden");
-    DOM.riskCritical.textContent = riskCounts.critical || 0;
+    DOM.riskCritical.textContent = totalCritical;
     DOM.riskHigh.textContent = riskCounts.high || 0;
     DOM.riskMedium.textContent = riskCounts.medium || 0;
     DOM.riskLow.textContent = riskCounts.low || 0;
@@ -275,12 +321,35 @@
       }
     }
 
-    DOM.rawOutput.textContent = JSON.stringify({ file, stats, findings, extracted_payloads: payloads }, null, 2);
+    DOM.hiddenFormatContainer.innerHTML = "";
+    DOM.tabHiddenFormatBtn.classList.toggle("hidden", hiddenFormatFindings.length === 0 && !("hidden_format_findings" in data));
+    if (hiddenFormatFindings.length === 0) {
+      DOM.noHiddenFormat.classList.remove("hidden");
+    } else {
+      DOM.noHiddenFormat.classList.add("hidden");
+      for (const f of hiddenFormatFindings) {
+        const card = document.createElement("div");
+        card.className = "hiddenformat-card";
+        card.innerHTML = `
+          <div class="hiddenformat-text">${escapeHtml(f.text)}</div>
+          <div class="hiddenformat-reasons">${f.reasons.map((r) => "<code>" + escapeHtml(r) + "</code>").join(" ")}</div>
+        `;
+        DOM.hiddenFormatContainer.appendChild(card);
+      }
+    }
+
+    DOM.rawOutput.textContent = JSON.stringify(
+      { file, stats, findings, extracted_payloads: payloads, hidden_format_findings: hiddenFormatFindings },
+      null,
+      2
+    );
 
     document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
-    document.querySelector('.tab[data-tab="findings"]').classList.add("active");
-    DOM.tabFindings.classList.remove("hidden");
+    const defaultTab = hiddenFormatFindings.length > 0 ? "hiddenFormat" : "findings";
+    document.querySelector(`.tab[data-tab="${defaultTab}"]`).classList.add("active");
+    DOM.tabFindings.classList.toggle("hidden", defaultTab !== "findings");
     DOM.tabPayloads.classList.add("hidden");
+    DOM.tabHiddenFormat.classList.toggle("hidden", defaultTab !== "hiddenFormat");
     DOM.tabRaw.classList.add("hidden");
 
     DOM.exportBar.classList.remove("hidden");

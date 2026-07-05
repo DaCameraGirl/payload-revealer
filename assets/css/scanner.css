@@ -109,6 +109,45 @@
 
 .scanner-hint { color: var(--sc-text-muted); font-size: 0.85rem; }
 
+.rich-paste-box {
+  min-height: 160px;
+  max-height: 320px;
+  overflow: auto;
+  background: var(--sc-bg-card);
+  border: 1px solid var(--sc-border);
+  border-radius: 8px;
+  padding: 14px;
+  color: var(--sc-text-primary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.rich-paste-box:focus { outline: none; border-color: var(--sc-accent); }
+
+.rich-paste-box:empty::before {
+  content: attr(data-placeholder);
+  color: var(--sc-text-muted);
+}
+
+.hiddenformat-card {
+  background: var(--sc-bg-card);
+  border: 1px solid var(--sc-critical);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.hiddenformat-text {
+  font-family: var(--sc-font-mono);
+  font-size: 0.85rem;
+  color: var(--sc-text-primary);
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.hiddenformat-reasons { display: flex; gap: 6px; flex-wrap: wrap; }
+.hiddenformat-reasons code { background: var(--sc-critical-bg); color: var(--sc-critical); padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; }
+
 /* ===== Drop Zone ===== */
 .drop-zone {
   border: 2px dashed var(--sc-border);
