@@ -149,6 +149,7 @@
     <div class="scanner-tabs">
       <button id="scPasteTab" class="scanner-tab-btn active">Paste text</button>
       <button id="scFileTab" class="scanner-tab-btn">Drop / choose a file</button>
+      <button id="scRichTab" class="scanner-tab-btn">Paste rich text (catches hidden formatting)</button>
     </div>
 
     <div id="scPastePanel" class="scanner-input-panel paste-panel">
@@ -167,6 +168,14 @@
           <p>Drop a file here to scan it</p>
           <p class="drop-hint">or click to choose a <strong>.txt</strong> file</p>
         </div>
+      </div>
+    </div>
+
+    <div id="scRichPanel" class="scanner-input-panel hidden">
+      <p class="scanner-hint">Copy directly from the source (Google Doc, webpage, Slack message) and paste here with <strong>Ctrl+V</strong>. This catches text hidden with white-on-white color, zero-size fonts, or <code>display:none</code> &mdash; formatting tricks a plain-text paste can't reveal, because the styling is already stripped by then.</p>
+      <div id="scRichInput" class="rich-paste-box" contenteditable="true" data-placeholder="Paste here (Ctrl+V) to preserve formatting&hellip;"></div>
+      <div class="scanner-actions">
+        <button id="scBtnClearRich" class="btn btn-outline">Clear</button>
       </div>
     </div>
 
@@ -228,6 +237,7 @@
       <div class="tabs">
         <button class="tab active" data-tab="findings">&#9888; Findings</button>
         <button class="tab" data-tab="payloads">&#128273; Decoded Payloads</button>
+        <button class="tab hidden" data-tab="hiddenFormat" id="tabHiddenFormatBtn">&#128065; Hidden Formatting</button>
         <button class="tab" data-tab="raw">&#128221; Raw Report</button>
       </div>
 
@@ -259,6 +269,14 @@
         <div id="noPayloads" class="empty-state hidden">
           <span class="empty-icon">&#128270;</span>
           <p>No extractable payloads found</p>
+        </div>
+      </div>
+
+      <div id="tabHiddenFormat" class="tab-content hidden">
+        <div id="hiddenFormatContainer"></div>
+        <div id="noHiddenFormat" class="empty-state hidden">
+          <span class="empty-icon">&#128065;</span>
+          <p>No formatting-hidden text detected</p>
         </div>
       </div>
 
@@ -410,6 +428,7 @@ python -m payload_revealer ./suspicious_docs/ --recursive</code></pre>
 
 </div>
 <script src="assets/js/scan-engine.js"></script>
+<script src="assets/js/hidden-format-scanner.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

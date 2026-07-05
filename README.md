@@ -106,6 +106,7 @@ beacon://c2-exfil.lan/reg?agent=demo-01
 
 
 - **Live Browser Scanner** — Paste or drop a file at the [Pages link](https://dacameragirl.github.io/payload-revealer/) and scan instantly, no install, nothing leaves your tab
+- **Hidden Formatting Detector** — Paste rich text (Ctrl+V from the source) to catch white-on-white, zero-size-font, and `display:none` instructions hidden in docs, webpages, or Slack messages — no invisible Unicode required
 - **Character Count Scanner** — Total character count even if content is invisible
 - **Invisible Payload Detector** — Flags zero-width spaces, Unicode control characters, bidirectional overrides, invisible whitespace, Unicode tags, and other hidden text artifacts
 - **Visualizer Panel** — Shows hidden content in decoded, readable format
@@ -176,14 +177,23 @@ python -m payload_revealer ./suspicious_docs/ --recursive
 | Noncharacters | `U+FFFE`, `U+FFFF`, etc. | High |
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
+<p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Hidden%20Formatting&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="Hidden Formatting" /></p>
+
+Invisible Unicode isn't the only trick. A shared doc, webpage, or Slack message can hide an instruction in plain sight with **white-on-white text, `display:none`, `opacity:0`, or a zero-size font** — no exotic characters involved, just formatting. That text looks completely normal once it's copied, so a plain-text paste alone can't catch it: the styling that hid it is already gone by the time it lands in a scanner.
+
+The **live scanner's "Paste rich text" mode** catches this instead. Copy directly from the source (Ctrl+C in the Google Doc, webpage, or Slack message, not a re-typed version) and paste with Ctrl+V into that tab — browsers preserve the source's styling in the clipboard's HTML data, and the scanner reads it directly for text whose color matches its background, is set to invisible, or has been shrunk to nothing.
+
+This is a **live-scanner-only** feature for now — the Python CLI and desktop app work from saved `.txt` files, which never carry formatting to begin with.
+
+<p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
 <p align="center"><img src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=What%20It%20Does%20Not%20Detect&fontSize=22&fontColor=e6edf3&animation=twinkling" width="720" alt="What It Does Not Detect" /></p>
 
 
-This tool is scoped to **text and Unicode forensics**. It is not a universal steganography detector.
+This tool is scoped to **text, Unicode, and hidden-formatting forensics**. It is not a universal steganography detector.
 
 | Scenario | Why it is out of scope |
 |----------|------------------------|
-| **CSS-transparent text** | Letters hidden with `color: transparent` or similar styling are normal Unicode when pasted into a plain text file. Payload Revealer does not parse HTML or CSS. |
+| **CSS-transparent text pasted as plain text** | The live scanner's "Paste rich text" mode catches this if you copy from the original source. But a `.txt` file, the CLI, or the desktop app only ever see plain text, which has no formatting left to inspect. |
 | **Image, PDF, or media steganography** | No parsers for LSB image stego, PDF object tricks, audio watermarks, or other binary media payloads. |
 
 <p align="center"><img src="docs/readme-divider.svg" width="720" alt="" /></p>
@@ -209,7 +219,8 @@ payload_revealer/
 ├── assets/                 # Browser scan engine (JS port of the Python engine)
 │   ├── js/
 │   │   ├── scan-engine.js  # Classifier + payload extractor, runs client-side
-│   │   └── app.js          # UI wiring: paste/drop input, results rendering, export
+│   │   ├── hidden-format-scanner.js  # Detects CSS-hidden text (white-on-white, etc.)
+│   │   └── app.js          # UI wiring: paste/drop/rich-paste input, results rendering, export
 │   └── css/
 │       └── scanner.css
 ├── payload_revealer/       # Python engine
