@@ -6,6 +6,7 @@
 <title>Payload Revealer — Catch invisible Unicode instructions hidden in copied text</title>
 <meta name="description" content="Catches invisible Unicode instructions hidden inside copied Slack, chat, and doc text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts.">
 <link rel="icon" href="electron/assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/scanner.css">
 <style>
   :root {
     --bg: #070b14;
@@ -122,12 +123,13 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="top">
 
   <div class="hero">
     <img class="banner" src="docs/readme-banner.svg" alt="Payload Revealer">
-    <p class="tagline">Catches invisible Unicode instructions hidden inside copied text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts that can smuggle answers or prompt instructions into Slack, docs, chats, or evaluation tasks.</p>
+    <p class="tagline">Catches invisible Unicode instructions hidden inside copied text — zero-width characters, bidi overrides, Unicode tags, and other copy/paste artifacts that can smuggle answers or prompt instructions into Slack, docs, chats, or evaluation tasks. Runs live in this page, no install needed.</p>
     <div class="badges">
+      <a href="#live-scanner"><img src="https://img.shields.io/badge/Try%20it-Live%20Scanner-33d69f?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Try the live scanner"></a>
       <a href="https://github.com/DaCameraGirl/payload-revealer"><img src="https://img.shields.io/badge/Code-GitHub-58a6ff?style=for-the-badge&logo=github&logoColor=white" alt="Source code"></a>
       <a href="https://github.com/DaCameraGirl/payload-revealer/releases/latest"><img src="https://img.shields.io/badge/download-desktop%20app-33d69f?style=for-the-badge" alt="Download"></a>
     </div>
@@ -140,10 +142,144 @@
   </div>
 
   <img class="divider" src="docs/readme-divider.svg" alt="">
+  <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Live%20Scanner&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Live Scanner">
+  <section class="scanner" id="live-scanner">
+    <p class="lede">Runs entirely in this tab &mdash; nothing you paste or drop ever leaves your browser. Paste suspicious text or drop a <code>.txt</code> file to scan it.</p>
+
+    <div class="scanner-tabs">
+      <button id="scPasteTab" class="scanner-tab-btn active">Paste text</button>
+      <button id="scFileTab" class="scanner-tab-btn">Drop / choose a file</button>
+    </div>
+
+    <div id="scPastePanel" class="scanner-input-panel paste-panel">
+      <textarea id="scTextarea" placeholder="Paste suspicious Slack/chat/doc text here&hellip;"></textarea>
+      <div class="scanner-actions">
+        <button id="scBtnScanText" class="btn btn-primary">Scan Text</button>
+        <span class="scanner-hint">Nothing is uploaded &mdash; scanning happens locally in this tab.</span>
+      </div>
+    </div>
+
+    <div id="scFilePanel" class="scanner-input-panel hidden">
+      <input id="scFileInput" type="file" accept=".txt,text/plain" class="hidden">
+      <div id="dropZone" class="drop-zone">
+        <div class="drop-zone-content">
+          <span class="drop-icon">&#128196;</span>
+          <p>Drop a file here to scan it</p>
+          <p class="drop-hint">or click to choose a <strong>.txt</strong> file</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusBar" class="status-bar hidden">
+      <div class="status-file"></div>
+      <div class="status-badges">
+        <span id="badgeTotal" class="badge"></span>
+        <span id="badgeHidden" class="badge badge-danger hidden"></span>
+        <span id="badgeCritical" class="badge badge-critical hidden"></span>
+      </div>
+      <div class="status-spinner hidden">
+        <span class="spinner"></span> Scanning&hellip;
+      </div>
+    </div>
+
+    <div id="statsGrid" class="stats-grid hidden">
+      <div class="stat-card">
+        <div class="stat-label">Total Characters</div>
+        <div class="stat-value" id="statTotalChars">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visible Chars</div>
+        <div class="stat-value" id="statVisibleChars">-</div>
+      </div>
+      <div class="stat-card stat-card-warn">
+        <div class="stat-label">Hidden Chars</div>
+        <div class="stat-value" id="statHiddenChars">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Visible Words</div>
+        <div class="stat-value" id="statVisibleWords">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Actual Words</div>
+        <div class="stat-value" id="statActualWords">-</div>
+      </div>
+      <div class="stat-card stat-card-warn">
+        <div class="stat-label">Word Count Delta</div>
+        <div class="stat-value" id="statWordDelta">-</div>
+      </div>
+    </div>
+
+    <div id="riskSummary" class="risk-summary hidden">
+      <span class="risk-chip critical">
+        <span class="chip-dot"></span> Critical: <strong id="riskCritical">0</strong>
+      </span>
+      <span class="risk-chip high">
+        <span class="chip-dot"></span> High: <strong id="riskHigh">0</strong>
+      </span>
+      <span class="risk-chip medium">
+        <span class="chip-dot"></span> Medium: <strong id="riskMedium">0</strong>
+      </span>
+      <span class="risk-chip low">
+        <span class="chip-dot"></span> Low: <strong id="riskLow">0</strong>
+      </span>
+    </div>
+
+    <div id="resultsPanel" class="results-panel hidden">
+      <div class="tabs">
+        <button class="tab active" data-tab="findings">&#9888; Findings</button>
+        <button class="tab" data-tab="payloads">&#128273; Decoded Payloads</button>
+        <button class="tab" data-tab="raw">&#128221; Raw Report</button>
+      </div>
+
+      <div id="tabFindings" class="tab-content">
+        <div class="table-scroll">
+          <table id="findingsTable">
+            <thead>
+              <tr>
+                <th>Index</th>
+                <th>Codepoint</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Block</th>
+                <th>Risk</th>
+                <th>Tags</th>
+              </tr>
+            </thead>
+            <tbody id="findingsBody"></tbody>
+          </table>
+        </div>
+        <div id="noFindings" class="empty-state hidden">
+          <span class="empty-icon">&#9989;</span>
+          <p>No hidden characters or suspicious payloads detected</p>
+        </div>
+      </div>
+
+      <div id="tabPayloads" class="tab-content hidden">
+        <div id="payloadContainer"></div>
+        <div id="noPayloads" class="empty-state hidden">
+          <span class="empty-icon">&#128270;</span>
+          <p>No extractable payloads found</p>
+        </div>
+      </div>
+
+      <div id="tabRaw" class="tab-content hidden">
+        <pre id="rawOutput" class="raw-output"></pre>
+      </div>
+    </div>
+
+    <div id="exportBar" class="export-bar hidden">
+      <button id="btnExportJson" class="btn btn-outline">&#128190; Export JSON</button>
+      <button id="btnExportTxt" class="btn btn-outline">&#128196; Export TXT</button>
+    </div>
+
+    <div id="errorToast" class="toast toast-error hidden"></div>
+  </section>
+
+  <img class="divider" src="docs/readme-divider.svg" alt="">
   <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=The%20Slack%20Scenario&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="The Slack Scenario">
   <section>
     <p class="lede">A copied answer can look normal in Slack while carrying invisible Unicode underneath — hidden instructions like &ldquo;pick option 3&rdquo; or &ldquo;tell them X said Y.&rdquo; PowerShell and some editors may expose weird characters; Payload Revealer does the systematic version: enumerate every codepoint, report suspicious invisible characters, and decode embedded payloads when possible.</p>
-    <p><strong>If something pasted suspicious:</strong></p>
+    <p><strong>If something pasted suspicious:</strong> paste it into the <a href="#top">live scanner above</a> &mdash; or, for scripting and batch/audit-trail work, use the CLI:</p>
     <pre><code>python -m payload_revealer .\suspicious.txt
 
 # For a shareable audit trail:
@@ -154,6 +290,7 @@ python -m payload_revealer .\suspicious.txt --format json --output report.json</
   <img class="divider" src="docs/readme-divider.svg" alt="">
   <img class="section-banner" src="https://capsule-render.vercel.app/api?type=waving&color=0:070b14,100:12102a&height=50&section=header&text=Quick%20Download&fontSize=22&fontColor=e6edf3&animation=twinkling" alt="Quick Download">
   <section>
+    <p class="lede">The <a href="#top">live scanner above</a> needs nothing installed. Grab the desktop app instead if you want it offline, or working outside a browser:</p>
     <div class="download-card">
       <a class="download-btn" href="https://github.com/DaCameraGirl/payload-revealer/releases/latest">Download the Windows installer</a>
       <p class="download-meta">Installs the Payload Revealer desktop app. No Python required. Drag a file onto the drop zone or click Open File.</p>
@@ -272,5 +409,7 @@ python -m payload_revealer ./suspicious_docs/ --recursive</code></pre>
   </footer>
 
 </div>
+<script src="assets/js/scan-engine.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
